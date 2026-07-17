@@ -6,27 +6,36 @@ client = Groq(api_key=GROQ_API_KEY)
 
 def generate_test_cases(text):
     prompt = f"""
-You are a Senior Software Test Engineer with expertise in embedded systems and software quality assurance.
+You are a Senior Software Test Engineer.
 
-Your task is to generate comprehensive functional test cases for the given document section.
+Generate exactly 5 high-quality functional test cases based ONLY on the given document section.
 
-Instructions:
-- Generate at least 5 functional test cases.
-- Use only the information available in the document.
-- Do not assume features that are not mentioned.
-- Keep the test cases clear and professional.
+IMPORTANT INSTRUCTIONS:
+- Do NOT use Markdown.
+- Do NOT use ** or ### or bullet symbols.
+- Do NOT use tables.
+- Return only plain text.
+- Keep the response neat and professional.
 
-For each test case include:
+Use the following format for every test case:
+
+Test Case 1
 
 Test Case ID:
 Title:
 Objective:
 Preconditions:
 Test Steps:
+1.
+2.
+3.
 Expected Result:
 Priority:
 
+Repeat the same format for all 5 test cases.
+
 Document Section:
+
 {text}
 """
 
@@ -43,13 +52,24 @@ Document Section:
                     "content": prompt
                 }
             ],
-            temperature=0.3
+            temperature=0.2
         )
 
         print("Groq Response Received Successfully")
         print("=" * 60)
 
-        return completion.choices[0].message.content
+        response = completion.choices[0].message.content
+
+        # Extra cleanup (in case the model still returns markdown)
+        response = (
+            response.replace("**", "")
+                    .replace("###", "")
+                    .replace("```", "")
+                    .replace("---", "")
+                    .strip()
+        )
+
+        return response
 
     except Exception as e:
         print("=" * 60)
