@@ -6,27 +6,34 @@ client = Groq(api_key=GROQ_API_KEY)
 
 def generate_test_cases(text):
     prompt = f"""
-You are an experienced Software Test Engineer.
+You are a Senior Software Test Engineer with expertise in embedded systems and software quality assurance.
 
-Generate functional test cases for the following document.
+Your task is to generate comprehensive functional test cases for the given document section.
 
-Return ONLY in this format:
+Instructions:
+- Generate at least 5 functional test cases.
+- Use only the information available in the document.
+- Do not assume features that are not mentioned.
+- Keep the test cases clear and professional.
+
+For each test case include:
 
 Test Case ID:
 Title:
-Precondition:
-Steps:
+Objective:
+Preconditions:
+Test Steps:
 Expected Result:
+Priority:
 
-Document:
-
+Document Section:
 {text}
 """
 
     try:
-        print("=" * 50)
-        print("Calling Groq...")
-        print("=" * 50)
+        print("=" * 60)
+        print("Calling Groq API...")
+        print("=" * 60)
 
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
@@ -39,14 +46,15 @@ Document:
             temperature=0.3
         )
 
-        print("Groq Success")
+        print("Groq Response Received Successfully")
+        print("=" * 60)
 
         return completion.choices[0].message.content
 
     except Exception as e:
-        print("=" * 50)
+        print("=" * 60)
         print("GROQ ERROR")
         print(type(e))
         print(e)
-        print("=" * 50)
+        print("=" * 60)
         raise

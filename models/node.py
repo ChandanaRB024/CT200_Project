@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+
 from database.database import Base
 
 
@@ -18,3 +20,10 @@ class Node(Base):
     parent_id = Column(Integer, nullable=True)
 
     document_id = Column(Integer, ForeignKey("documents.id"))
+
+    # Relationship with TestCase
+    test_cases = relationship(
+        "TestCase",
+        back_populates="node",
+        cascade="all, delete-orphan"
+    )

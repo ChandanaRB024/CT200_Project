@@ -1,9 +1,19 @@
 from fastapi import FastAPI
 
+# Import models so SQLAlchemy knows about them
+import models.document
+import models.node
+import models.test_case
+
+from database.database import Base, engine
+
 from routes.document_routes import router as document_router
 from routes.generation_routes import router as generation_router
 from routes.node_routes import router as node_router
 from routes.selection_routes import router as selection_router
+
+# Create all database tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="CT200 Document Management API",
@@ -19,6 +29,7 @@ def home():
     }
 
 
+# Register all routes
 app.include_router(document_router)
 app.include_router(generation_router)
 app.include_router(node_router)
